@@ -4,6 +4,8 @@
 
 Ideal para clubes, torneos abiertos o quedadas donde hay que repartir a todo el mundo en pistas de 4 jugadores de forma rápida y coherente.
 
+**App en vivo (Vercel):** [https://padel-pairings.vercel.app/](https://padel-pairings.vercel.app/)
+
 ---
 
 ## Qué hace esta app
@@ -73,5 +75,7 @@ npm run build
 Salida en la carpeta `dist/`.
 
 ## Despliegue
+
+La versión publicada está en **[padel-pairings.vercel.app](https://padel-pairings.vercel.app/)**.
 
 El proyecto incluye `vercel.json` pensado para **Vite + React Router** en [Vercel](https://vercel.com).
