@@ -47,6 +47,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "primary-glow": "hsl(var(--primary-glow))",
+        court: {
+          surface: "hsl(var(--court-surface))",
+          "surface-light": "hsl(var(--court-surface-light))",
+          line: "hsl(var(--court-line))",
+          net: "hsl(var(--court-net))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
