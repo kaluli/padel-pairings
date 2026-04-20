@@ -1,29 +1,38 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { PlayerInput } from "@/components/PlayerInput";
 import { PadelCourt } from "@/components/PadelCourt";
-import { MOCK_PLAYERS, buildCourts, shuffle } from "@/lib/padel";
+import { buildCourts } from "@/lib/padel";
+import { usePadelPlayers } from "@/context/PadelPlayersContext";
 import { Trophy } from "lucide-react";
 
 const Index = () => {
-  const [players, setPlayers] = useState<string[]>([]);
-  // Bumping this seed re-randomizes positions on shuffle
-  const [seed, setSeed] = useState(0);
+  const {
+    players,
+    orderedPlayers,
+    isLevelOrdering,
+    addPlayer,
+    removePlayer,
+    bumpShuffle,
+    loadMockPlayers,
+    clear,
+    shuffleSeed,
+  } = usePadelPlayers();
 
-  const orderedPlayers = useMemo(() => {
-    // seed is intentionally a dependency to trigger reshuffle
-    void seed;
-    return shuffle(players);
-  }, [players, seed]);
+  const namesInCourtOrder = useMemo(
+    () => orderedPlayers.map((p) => p.displayName),
+    [orderedPlayers],
+  );
 
-  const courts = useMemo(() => buildCourts(orderedPlayers), [orderedPlayers]);
+  const courtsRaw = useMemo(() => buildCourts(namesInCourtOrder), [namesInCourtOrder]);
+
+  /** Con orden por nivel: las pistas inferiores (abajo en la cuadrícula) agrupan el nivel más bajo */
+  const courts = useMemo(() => {
+    if (!isLevelOrdering) return courtsRaw;
+    return [...courtsRaw].reverse();
+  }, [courtsRaw, isLevelOrdering]);
+
   const leftover = players.length % 4;
-  const waitingPlayers = orderedPlayers.slice(orderedPlayers.length - leftover);
-
-  const handleAdd = (name: string) => setPlayers((p) => [...p, name]);
-  const handleRemove = (i: number) => setPlayers((p) => p.filter((_, idx) => idx !== i));
-  const handleShuffle = () => setSeed((s) => s + 1);
-  const handleLoadMock = () => setPlayers(MOCK_PLAYERS.slice(0, 8));
-  const handleClear = () => setPlayers([]);
+  const waitingNames = namesInCourtOrder.slice(namesInCourtOrder.length - leftover);
 
   return (
     <div className="min-h-screen bg-background">
@@ -52,11 +61,11 @@ const Index = () => {
           <aside className="lg:sticky lg:top-6 lg:self-start">
             <PlayerInput
               players={players}
-              onAdd={handleAdd}
-              onRemove={handleRemove}
-              onShuffle={handleShuffle}
-              onLoadMock={handleLoadMock}
-              onClear={handleClear}
+              onAdd={addPlayer}
+              onRemove={removePlayer}
+              onShuffle={bumpShuffle}
+              onLoadMock={loadMockPlayers}
+              onClear={clear}
             />
           </aside>
 
@@ -75,31 +84,38 @@ const Index = () => {
                   </span>
                 </div>
 
+                {isLevelOrdering && (
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Orden por nivel: arriba en la lista los de mayor nivel; abajo los de menor nivel. Pareja:
+                    dos jugadores en la misma mitad de pista (mismo lado de la red); rivales en la otra mitad.
+                  </p>
+                )}
+
                 <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                   {courts.map((c, i) => (
                     <PadelCourt
-                      key={`court-${i}-${seed}`}
+                      key={`court-${i}-${shuffleSeed}-${isLevelOrdering}`}
                       courtNumber={i + 1}
-                      leftPlayers={c.left.map((name) => ({ name }))}
-                      rightPlayers={c.right.map((name) => ({ name }))}
+                      bottomHalfPlayers={c.left.map((name) => ({ name }))}
+                      topHalfPlayers={c.right.map((name) => ({ name }))}
                       status={i === 0 ? "in-progress" : "ready"}
                     />
                   ))}
                 </div>
 
-                {waitingPlayers.length > 0 && (
+                {waitingNames.length > 0 && (
                   <div className="mt-6 bg-card rounded-2xl border border-dashed border-border p-5 animate-fade-in">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-                      <h3 className="font-bold text-sm">En espera ({waitingPlayers.length})</h3>
+                      <h3 className="font-bold text-sm">En espera ({waitingNames.length})</h3>
                       <span className="text-xs text-muted-foreground ml-auto">
-                        Añade {4 - waitingPlayers.length} más para una pista nueva
+                        Añade {4 - waitingNames.length} más para una pista nueva
                       </span>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {waitingPlayers.map((name, i) => (
+                      {waitingNames.map((name, i) => (
                         <span
-                          key={`w-${i}`}
+                          key={`w-${name}-${i}`}
                           className="px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-xs font-medium"
                         >
                           {name}
@@ -126,7 +142,7 @@ const EmptyState = ({ count }: { count: number }) => (
       <h3 className="font-bold text-lg tracking-tight">Aún no hay pistas</h3>
       <p className="text-sm text-muted-foreground mt-1.5">
         {count === 0
-          ? "Añade jugadores para empezar. Cada 4 jugadores se generará una pista nueva automáticamente."
+          ? "Importa un Excel/CSV o añade jugadores. Cada 4 jugadores se generará una pista nueva automáticamente."
           : `Tienes ${count} jugador${count === 1 ? "" : "es"}. Necesitas ${4 - count} más para crear la primera pista.`}
       </p>
     </div>

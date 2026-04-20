@@ -1,3 +1,5 @@
+import type { PlayerEntry } from "@/types/player";
+
 export const MOCK_PLAYERS = [
   "Karina",
   "Julieta",
@@ -13,6 +15,18 @@ export const MOCK_PLAYERS = [
   "Toni",
 ];
 
+/** Orden ascendente por nivel; sin nivel al final */
+export function sortPlayersByNivel(players: PlayerEntry[]): PlayerEntry[] {
+  return [...players].sort((a, b) => {
+    const na = a.nivel;
+    const nb = b.nivel;
+    if (na === null && nb === null) return 0;
+    if (na === null) return 1;
+    if (nb === null) return -1;
+    return na - nb;
+  });
+}
+
 /** Fisher-Yates shuffle (immutable) */
 export const shuffle = <T,>(arr: T[]): T[] => {
   const copy = [...arr];
@@ -23,6 +37,7 @@ export const shuffle = <T,>(arr: T[]): T[] => {
   return copy;
 };
 
+/** left/right = parejas rivales; en UI cenital left → mitad inferior, right → mitad superior */
 export interface CourtAssignment {
   left: string[];
   right: string[];

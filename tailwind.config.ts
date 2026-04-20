@@ -50,9 +50,12 @@ export default {
         "primary-glow": "hsl(var(--primary-glow))",
         court: {
           surface: "hsl(var(--court-surface))",
+          "surface-mid": "hsl(var(--court-surface-mid))",
           "surface-light": "hsl(var(--court-surface-light))",
+          surround: "hsl(var(--court-surround))",
           line: "hsl(var(--court-line))",
           net: "hsl(var(--court-net))",
+          "net-band": "hsl(var(--court-net-band))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

@@ -9,10 +9,10 @@ export type CourtStatus = "ready" | "in-progress" | "waiting";
 export interface PadelCourtProps {
   /** Court number / label shown in the header */
   courtNumber: number;
-  /** Players on the left side of the net (max 2) */
-  leftPlayers: CourtPlayer[];
-  /** Players on the right side of the net (max 2) */
-  rightPlayers: CourtPlayer[];
+  /** Mitad inferior de la pista (cenital): pareja junto a la red en tu lado típico de diagrama */
+  bottomHalfPlayers: CourtPlayer[];
+  /** Mitad superior (otro lado de la red) */
+  topHalfPlayers: CourtPlayer[];
   /** Court status — easy to wire to real data later */
   status?: CourtStatus;
 }
@@ -34,14 +34,14 @@ const statusConfig: Record<CourtStatus, { label: string; className: string }> = 
 
 export const PadelCourt = ({
   courtNumber,
-  leftPlayers,
-  rightPlayers,
+  bottomHalfPlayers,
+  topHalfPlayers,
   status = "ready",
 }: PadelCourtProps) => {
   const statusInfo = statusConfig[status];
 
   return (
-    <div className="group bg-card rounded-2xl shadow-card hover:shadow-court transition-smooth overflow-hidden border border-border/50 animate-fade-in">
+    <div className="group bg-card rounded-2xl shadow-card hover:shadow-court transition-smooth border border-border/50 animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5 bg-gradient-hero">
         <div className="flex items-center gap-2.5">
@@ -59,56 +59,63 @@ export const PadelCourt = ({
         </span>
       </div>
 
-      {/* Court (cenital view) */}
-      <div className="p-5 bg-muted/30">
-        <div
-          className="relative aspect-[4/3] rounded-xl bg-gradient-court shadow-court overflow-hidden"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, transparent 0 22px, hsl(0 0% 100% / 0.04) 22px 23px)",
-          }}
-        >
-          {/* Outer court lines */}
-          <div className="absolute inset-3 border-2 border-court-line/90 rounded-md" />
-
-          {/* Service line - left side */}
-          <div className="absolute top-3 bottom-3 left-[28%] w-0.5 bg-court-line/80" />
-          {/* Service line - right side */}
-          <div className="absolute top-3 bottom-3 right-[28%] w-0.5 bg-court-line/80" />
-
-          {/* Horizontal service line */}
-          <div className="absolute left-[28%] right-[28%] top-1/2 h-0.5 bg-court-line/80 -translate-y-1/2" />
-
-          {/* Net */}
-          <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-1 bg-court-net shadow-[0_0_12px_hsl(var(--court-net)/0.6)]">
+      {/* Court (cenital): proporción ~10×20 m → más alta que ancha; red horizontal */}
+      <div className="px-6 py-7 sm:px-7 sm:py-8 bg-muted/30">
+        {/* ~10×20 m cenital; largo reducido ~15 % respecto a 10/21 → 10/17.85 ≈ 200/357 */}
+        <div className="relative mx-auto aspect-[200/357] w-full max-w-[min(100%,280px)] overflow-visible rounded-xl shadow-court sm:max-w-[300px]">
+          {/* Capa decorativa */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl bg-court-surround shadow-[inset_0_1px_0_hsl(0_0%_100%/0.14)]">
             <div
-              className="absolute inset-0 opacity-70"
+              className="absolute inset-[9px] overflow-hidden rounded-[11px] ring-1 ring-white/35"
               style={{
-                backgroundImage:
-                  "repeating-linear-gradient(90deg, hsl(0 0% 100% / 0.4) 0 2px, transparent 2px 4px)",
+                backgroundImage: [
+                  "repeating-linear-gradient(90deg, hsl(0 0% 0% / 0.12) 0 1px, transparent 1px 18px)",
+                  "repeating-linear-gradient(0deg, hsl(0 0% 100% / 0.07) 0 2px, transparent 2px 22px)",
+                  "var(--gradient-court)",
+                ].join(", "),
+                boxShadow:
+                  "inset 0 3px 36px hsl(165 75% 5% / 0.42), inset 0 -2px 20px hsl(215 60% 15% / 0.25)",
               }}
-            />
+            >
+              {/* Perímetro de juego */}
+              <div className="absolute inset-3 rounded-[7px] border-[2.5px] border-white shadow-[0_0_0_1px_hsl(0_0%_0%/0.22),inset_0_1px_0_hsl(0_0%_100%/0.35)]" />
+
+              {/* Líneas verticales (cajas de servicio a izquierda y derecha) */}
+              <div className="absolute left-[28%] top-3 bottom-3 w-[3px] bg-white shadow-[1px_0_2px_hsl(0_0%_0%/0.25)]" />
+              <div className="absolute right-[28%] top-3 bottom-3 w-[3px] bg-white shadow-[-1px_0_2px_hsl(0_0%_0%/0.25)]" />
+
+              {/* Red horizontal en el centro (como una pista real vista desde arriba) */}
+              <div
+                className="absolute left-3 right-3 top-1/2 z-[1] h-[6px] -translate-y-1/2 shadow-[0_0_18px_hsl(0_0%_0%/0.5)]"
+                style={{
+                  backgroundImage: [
+                    "repeating-linear-gradient(90deg, hsl(0 0% 100% / 0.4) 0 2px, transparent 2px 5px)",
+                    "linear-gradient(180deg, hsl(var(--court-net)) 0%, hsl(var(--court-net-band)) 44%, hsl(var(--court-net-band)) 56%, hsl(var(--court-net)) 100%)",
+                  ].join(", "),
+                }}
+              />
+            </div>
           </div>
 
-          {/* Players - Left side */}
-          <div className="absolute inset-y-0 left-0 w-1/2 flex flex-col items-center justify-around py-6">
-            {leftPlayers.map((p, i) => (
-              <PlayerAvatar key={`L-${i}-${p.name}`} name={p.name} variant="primary" />
-            ))}
-          </div>
-
-          {/* Players - Right side */}
-          <div className="absolute inset-y-0 right-0 w-1/2 flex flex-col items-center justify-around py-6">
-            {rightPlayers.map((p, i) => (
-              <PlayerAvatar key={`R-${i}-${p.name}`} name={p.name} variant="accent" />
-            ))}
+          {/* Jugadores: mitad superior / inferior; en cada mitad los dos jugadores en fila (izq–der) */}
+          <div className="relative z-[2] grid h-full w-full grid-rows-2">
+            <div className="flex items-center justify-around px-3 pt-4 sm:px-5 sm:pt-6">
+              {topHalfPlayers.map((p, i) => (
+                <PlayerAvatar key={`T-${i}-${p.name}`} name={p.name} variant="accent" />
+              ))}
+            </div>
+            <div className="flex items-center justify-around px-3 pb-4 sm:px-5 sm:pb-6">
+              {bottomHalfPlayers.map((p, i) => (
+                <PlayerAvatar key={`B-${i}-${p.name}`} name={p.name} variant="primary" />
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Side labels */}
-        <div className="grid grid-cols-2 gap-2 mt-3 text-[10px] font-bold uppercase tracking-wider">
-          <div className="text-center text-primary">◀ Izquierda</div>
-          <div className="text-center text-accent">Derecha ▶</div>
+        {/* Leyenda (vista cenital: red horizontal) */}
+        <div className="mx-auto mt-3 flex max-w-[300px] flex-col gap-1 text-center text-[10px] font-bold uppercase tracking-wider">
+          <span className="text-accent">▲ Equipo A</span>
+          <span className="text-primary">▼ Equipo B</span>
         </div>
       </div>
     </div>

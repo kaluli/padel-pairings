@@ -3,9 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X, Shuffle, Users, Sparkles } from "lucide-react";
+import type { PlayerEntry } from "@/types/player";
+import { SpreadsheetUpload } from "@/components/SpreadsheetUpload";
 
 interface PlayerInputProps {
-  players: string[];
+  players: PlayerEntry[];
   onAdd: (name: string) => void;
   onRemove: (index: number) => void;
   onShuffle: () => void;
@@ -67,6 +69,8 @@ export const PlayerInput = ({
         </Button>
       </div>
 
+      <SpreadsheetUpload />
+
       {/* Quick actions */}
       <div className="flex flex-wrap gap-2">
         <Button variant="secondary" size="sm" onClick={onLoadMock} className="text-xs">
@@ -107,15 +111,18 @@ export const PlayerInput = ({
           <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pr-1">
             {players.map((p, i) => (
               <Badge
-                key={`${p}-${i}`}
+                key={p.id}
                 variant="secondary"
                 className="pl-2.5 pr-1 py-1 gap-1 text-xs font-medium animate-fade-in"
               >
-                {p}
+                {p.displayName}
+                {p.nivel != null && (
+                  <span className="opacity-70 font-normal"> · {p.nivel}</span>
+                )}
                 <button
                   onClick={() => onRemove(i)}
                   className="ml-0.5 hover:bg-destructive/20 hover:text-destructive rounded-full p-0.5 transition-smooth"
-                  aria-label={`Eliminar ${p}`}
+                  aria-label={`Eliminar ${p.displayName}`}
                 >
                   <X className="h-3 w-3" />
                 </button>
