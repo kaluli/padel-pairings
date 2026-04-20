@@ -130,7 +130,15 @@ const Index = () => {
 
       <footer className="mt-auto border-t border-primary/20 bg-primary/[0.06] py-2">
         <p className="text-center text-[10px] font-medium uppercase tracking-[0.22em] text-primary sm:text-[11px]">
-          by kalu
+          by{" "}
+          <a
+            href="https://www.linkedin.com/in/karina-pangaro/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline-offset-4 hover:underline decoration-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:rounded-sm"
+          >
+            kalu
+          </a>
         </p>
       </footer>
     </div>
