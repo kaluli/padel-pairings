@@ -1,6 +1,6 @@
 # Padel Match Builder
 
-Web para organizar jugadores en pistas de pádel a partir de una lista manual o de un archivo **Excel / CSV**.
+Organiza partidos y asigna jugadores a las pistas desde lista manual o archivo **Excel / CSV**.
 
 ## Formato del archivo de importación
 

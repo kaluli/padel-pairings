@@ -1,20 +1,5 @@
 import type { PlayerEntry } from "@/types/player";
 
-export const MOCK_PLAYERS = [
-  "Karina",
-  "Julieta",
-  "Andrea",
-  "Sam",
-  "Alex",
-  "Robin",
-  "Noa",
-  "Dani",
-  "Cris",
-  "Mika",
-  "Lou",
-  "Toni",
-];
-
 /** Orden ascendente por nivel; sin nivel al final */
 export function sortPlayersByNivel(players: PlayerEntry[]): PlayerEntry[] {
   return [...players].sort((a, b) => {

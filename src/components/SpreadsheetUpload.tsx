@@ -40,7 +40,7 @@ export function SpreadsheetUpload() {
           <FileSpreadsheet className="h-4 w-4" />
         </div>
         <div>
-          <h3 className="font-semibold text-sm tracking-tight">Datos desde archivo</h3>
+          <h3 className="font-semibold text-sm tracking-tight">Subir Archivo</h3>
           <p className="text-xs text-muted-foreground">
             Columnas: Nombre, Apellido, Nivel (.xlsx, .xls o .csv)
           </p>

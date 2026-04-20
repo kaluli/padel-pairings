@@ -13,7 +13,6 @@ const Index = () => {
     addPlayer,
     removePlayer,
     bumpShuffle,
-    loadMockPlayers,
     clear,
     shuffleSeed,
   } = usePadelPlayers();
@@ -35,7 +34,7 @@ const Index = () => {
   const waitingNames = namesInCourtOrder.slice(namesInCourtOrder.length - leftover);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
       <header className="bg-gradient-hero border-b border-border/50">
         <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -47,7 +46,7 @@ const Index = () => {
               <h1 className="text-xl sm:text-2xl font-bold text-primary-foreground tracking-tight">
                 Padel Match Builder
               </h1>
-              <p className="text-xs sm:text-sm text-primary-foreground/70">
+              <p className="text-xs sm:text-sm text-primary-foreground/70 mt-1">
                 Organiza partidos y asigna jugadores a las pistas
               </p>
             </div>
@@ -55,7 +54,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 sm:py-8">
+      <main className="container mx-auto flex-1 px-4 py-6 sm:py-8">
         <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
           {/* Sidebar - Input */}
           <aside className="lg:sticky lg:top-6 lg:self-start">
@@ -64,7 +63,6 @@ const Index = () => {
               onAdd={addPlayer}
               onRemove={removePlayer}
               onShuffle={bumpShuffle}
-              onLoadMock={loadMockPlayers}
               onClear={clear}
             />
           </aside>
@@ -129,6 +127,12 @@ const Index = () => {
           </section>
         </div>
       </main>
+
+      <footer className="mt-auto border-t border-primary/20 bg-primary/[0.06] py-2">
+        <p className="text-center text-[10px] font-medium uppercase tracking-[0.22em] text-primary sm:text-[11px]">
+          by kalu
+        </p>
+      </footer>
     </div>
   );
 };

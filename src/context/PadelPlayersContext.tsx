@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import type { PlayerEntry } from "@/types/player";
-import { MOCK_PLAYERS, shuffle, sortPlayersByNivel } from "@/lib/padel";
+import { shuffle, sortPlayersByNivel } from "@/lib/padel";
 
 type PadelPlayersContextValue = {
   players: PlayerEntry[];
@@ -18,7 +18,6 @@ type PadelPlayersContextValue = {
   addPlayer: (name: string) => void;
   removePlayer: (index: number) => void;
   loadPlayersFromSpreadsheet: (entries: PlayerEntry[]) => void;
-  loadMockPlayers: () => void;
   clear: () => void;
   shuffleSeed: number;
   bumpShuffle: () => void;
@@ -58,18 +57,6 @@ export function PadelPlayersProvider({ children }: { children: ReactNode }) {
     setShuffleSeed(0);
   }, []);
 
-  const loadMockPlayers = useCallback(() => {
-    setPlayers(
-      MOCK_PLAYERS.map((name) => ({
-        id: crypto.randomUUID(),
-        displayName: name,
-        nivel: null,
-      })),
-    );
-    setIsLevelOrdering(false);
-    setShuffleSeed((s) => s + 1);
-  }, []);
-
   const clear = useCallback(() => {
     setPlayers([]);
     setIsLevelOrdering(false);
@@ -89,7 +76,6 @@ export function PadelPlayersProvider({ children }: { children: ReactNode }) {
       addPlayer,
       removePlayer,
       loadPlayersFromSpreadsheet,
-      loadMockPlayers,
       clear,
       shuffleSeed,
       bumpShuffle,
@@ -101,7 +87,6 @@ export function PadelPlayersProvider({ children }: { children: ReactNode }) {
       addPlayer,
       removePlayer,
       loadPlayersFromSpreadsheet,
-      loadMockPlayers,
       clear,
       shuffleSeed,
       bumpShuffle,
