@@ -1,9 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { PlayerInput } from "@/components/PlayerInput";
 import { PadelCourt } from "@/components/PadelCourt";
+import { Button } from "@/components/ui/button";
 import { buildCourts } from "@/lib/padel";
+import { downloadCourtsHtml } from "@/lib/exportCourtsHtml";
 import { usePadelPlayers } from "@/context/PadelPlayersContext";
-import { Trophy } from "lucide-react";
+import { Download, Trophy } from "lucide-react";
 
 const Index = () => {
   const {
@@ -32,6 +34,15 @@ const Index = () => {
 
   const leftover = players.length % 4;
   const waitingNames = namesInCourtOrder.slice(namesInCourtOrder.length - leftover);
+
+  const handleDownloadHtml = useCallback(() => {
+    if (courts.length === 0) return;
+    downloadCourtsHtml({
+      courts,
+      waitingNames,
+      isLevelOrdering,
+    });
+  }, [courts, waitingNames, isLevelOrdering]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -73,13 +84,26 @@ const Index = () => {
               <EmptyState count={players.length} />
             ) : (
               <>
-                <div className="flex items-baseline justify-between mb-4">
-                  <h2 className="text-lg font-bold tracking-tight">
-                    {courts.length} {courts.length === 1 ? "Pista" : "Pistas"} generadas
-                  </h2>
-                  <span className="text-xs text-muted-foreground">
-                    {courts.length * 4} jugando
-                  </span>
+                <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4">
+                  <div className="flex min-w-0 flex-1 items-baseline justify-between gap-4">
+                    <h2 className="text-lg font-bold tracking-tight">
+                      {courts.length} {courts.length === 1 ? "Pista" : "Pistas"} generadas
+                    </h2>
+                    <span className="text-xs text-muted-foreground shrink-0">
+                      {courts.length * 4} jugando
+                    </span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="shrink-0 gap-2"
+                    onClick={handleDownloadHtml}
+                    aria-label="Descargar HTML con todas las pistas"
+                  >
+                    <Download className="h-4 w-4" aria-hidden />
+                    Descargar
+                  </Button>
                 </div>
 
                 {isLevelOrdering && (
