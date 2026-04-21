@@ -102,9 +102,40 @@ export const PadelCourt = ({
                     <g stroke="#ffffff" strokeOpacity={0.98} strokeLinecap="butt">
                       <line x1="0" y1={Y_SVC} x2={VB_W} y2={Y_SVC} strokeWidth={2} />
                       <line x1="0" y1={Y_SVC_BOT} x2={VB_W} y2={Y_SVC_BOT} strokeWidth={2} />
-                      <line x1="0" y1={Y_NET} x2={VB_W} y2={Y_NET} strokeWidth={3} />
                       <line x1={CX} y1={Y_SVC} x2={CX} y2={Y_NET} strokeWidth={2} />
                       <line x1={CX} y1={Y_NET} x2={CX} y2={Y_SVC_BOT} strokeWidth={2} />
+                    </g>
+                    {/* Red: aspecto malla — sombra suave + doble trazo punteado gris (vista cenital) */}
+                    <g strokeLinecap="round">
+                      <line
+                        x1="0"
+                        y1={Y_NET}
+                        x2={VB_W}
+                        y2={Y_NET}
+                        stroke="hsl(210 25% 8% / 0.45)"
+                        strokeWidth={5}
+                        opacity={0.5}
+                      />
+                      <line
+                        x1="0"
+                        y1={Y_NET}
+                        x2={VB_W}
+                        y2={Y_NET}
+                        stroke="hsl(210 14% 42%)"
+                        strokeWidth={2.5}
+                        strokeDasharray="5 8"
+                      />
+                      <line
+                        x1="0"
+                        y1={Y_NET}
+                        x2={VB_W}
+                        y2={Y_NET}
+                        stroke="hsl(210 20% 78%)"
+                        strokeWidth={1.2}
+                        strokeDasharray="5 8"
+                        strokeDashoffset={4}
+                        opacity={0.75}
+                      />
                     </g>
                   </svg>
                 </div>
