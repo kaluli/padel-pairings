@@ -15,6 +15,15 @@ Ideal para clubes, torneos abiertos o quedadas donde hay que repartir a todo el 
 3. **Ordena por nivel** para que la distribución refleje el nivel real de cada jugador en la vista (las pistas se organizan según ese criterio al venir del Excel).
 4. Puedes **añadir o quitar jugadores** a mano, **sortear** el orden si quieres aleatoriedad, o **limpiar** y empezar de nuevo.
 
+### Capturas (demo)
+
+<p align="center">
+  <strong>Demo</strong><br />
+  <img src="./demo.png" alt="Captura demo — Padel Match Builder" width="720" /><br /><br />
+  <strong>Demo 2</strong><br />
+  <img src="./demo2.png" alt="Captura demo 2 — Padel Match Builder" width="720" />
+</p>
+
 Todo ocurre en el navegador; no hace falta instalar nada más que el navegador para usar la versión desplegada.
 
 ---
