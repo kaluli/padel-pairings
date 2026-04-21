@@ -19,9 +19,9 @@ Ideal para clubes, torneos abiertos o quedadas donde hay que repartir a todo el 
 
 <p align="center">
   <strong>Demo</strong><br />
-  <img src="https://raw.githubusercontent.com/kaluli/padel-pairings/main/demo.png?v=3" alt="Captura demo — Padel Match Builder" width="720" /><br /><br />
+  <img src="./demo.png" alt="Captura demo — Padel Match Builder" width="720" /><br /><br />
   <strong>Demo 2</strong><br />
-  <img src="https://raw.githubusercontent.com/kaluli/padel-pairings/main/demo2.png?v=2" alt="Captura demo 2 — Padel Match Builder" width="720" />
+  <img src="./demo2.png" alt="Captura demo 2 — Padel Match Builder" width="720" />
 </p>
 
 Todo ocurre en el navegador; no hace falta instalar nada más que el navegador para usar la versión desplegada.
