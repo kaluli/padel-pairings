@@ -19,7 +19,7 @@ Ideal para clubes, torneos abiertos o quedadas donde hay que repartir a todo el 
 
 <p align="center">
   <strong>Demo</strong><br />
-  <img src="./demo.png" alt="Captura demo — Padel Match Builder" width="720" /><br /><br />
+  <img src="./readme-demo.png" alt="Captura demo — Padel Match Builder" width="720" /><br /><br />
   <strong>Demo 2</strong><br />
   <img src="./demo2.png" alt="Captura demo 2 — Padel Match Builder" width="720" />
 </p>
