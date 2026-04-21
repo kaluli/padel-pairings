@@ -44,16 +44,25 @@ const Index = () => {
     });
   }, [courts, waitingNames, isLevelOrdering]);
 
+  const handleReloadPage = useCallback(() => {
+    window.location.reload();
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
       <header className="bg-gradient-hero border-b border-border/50">
         <div className="container mx-auto px-4 py-6 sm:py-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-glow/20 backdrop-blur shadow-glow">
-              <Trophy className="h-5 w-5 text-primary-glow" />
+          <button
+            type="button"
+            onClick={handleReloadPage}
+            className="flex items-center gap-3 rounded-xl text-left outline-none transition-opacity hover:opacity-95 focus-visible:ring-2 focus-visible:ring-primary-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            aria-label="Recargar la página"
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-glow/20 backdrop-blur shadow-glow">
+              <Trophy className="h-5 w-5 text-primary-glow" aria-hidden />
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold text-primary-foreground tracking-tight">
                 Padel Match Builder
               </h1>
@@ -61,7 +70,7 @@ const Index = () => {
                 Organiza partidos y asigna jugadores a las pistas
               </p>
             </div>
-          </div>
+          </button>
         </div>
       </header>
 

@@ -32,6 +32,22 @@ Todo ocurre en el navegador; no hace falta instalar nada más que el navegador p
 
 La app lee **la primera hoja** del libro (por ejemplo `Hoja1`). La primera fila debe ser **cabecera** con nombres de columnas.
 
+### Plantilla del formato actual: `jugadores_padel_48_personas_y_pareja.xlsx`
+
+En la **raíz del repositorio** tienes un Excel listo para importar que cumple el **formato nuevo** (no es solo “nombre + apellido + nivel”):
+
+| Detalle | Qué incluye |
+|--------|----------------|
+| **Cabeceras** | `Nombre`, `Apellidos`, **`Nivel Playtomic`**, **`ParejaID`** |
+| **Nivel** | Columna de nivel en la tercera columna de datos (`Nivel Playtomic`); decimales con **coma** o punto (`2,55`). |
+| **ParejaID** | Opcional por fila. El mismo número en **dos filas** = esa pareja **siempre junta** en una mitad de pista; pueden tener nivel distinto (la app usa el **promedio** para ordenar en qué pista van). Quienes van **sin** `ParejaID` se emparejan entre sí (en número par si hay algún ID fijo en el archivo). |
+| **Tamaño** | **48 jugadores** en el ejemplo (12 parejas con ID + 24 sin ID emparejados entre sí). |
+
+Descarga directa desde GitHub:  
+[jugadores_padel_48_personas_y_pareja.xlsx](https://github.com/kaluli/padel-pairings/raw/main/jugadores_padel_48_personas_y_pareja.xlsx)
+
+El archivo **`Orden pistas.xlsx`** sigue siendo válido como ejemplo más simple (columnas clásicas **Nombre**, **Apellido**, **Nivel** sin `ParejaID`).
+
 ### Columnas de datos (nombres aceptados)
 
 | Columna | Alias reconocidos | Descripción |
@@ -73,7 +89,7 @@ Para ordenar la pareja del ejemplo en la lista de pistas se usa el promedio `(2.
 - Debe haber **al menos un nivel válido** en el conjunto; si ninguna fila tiene nivel interpretable como número, la importación falla.
 - Cada **4 jugadores** forman una pista completa (2 parejas rivales). Los que sobran aparecen en **En espera**.
 
-Ejemplos en el repo: **`Orden pistas.xlsx`**, **`jugadores_padel_48_personas_y_pareja.xlsx`** (formato con **Nivel Playtomic** y **ParejaID**).
+**Resumen:** usa **`jugadores_padel_48_personas_y_pareja.xlsx`** como referencia del formato ampliado; **`Orden pistas.xlsx`** como ejemplo mínimo sin parejas fijas.
 
 ---
 
