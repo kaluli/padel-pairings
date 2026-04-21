@@ -17,6 +17,14 @@ export interface PadelCourtProps {
   status?: CourtStatus;
 }
 
+/** ViewBox = 10 m × 20 m (ancho × largo cenital); encaja con aspect del rectángulo interior */
+const VB_W = 200;
+const VB_H = 357;
+const Y_SVC = (3 / 20) * VB_H;
+const Y_NET = VB_H / 2;
+const Y_SVC_BOT = VB_H - Y_SVC;
+const CX = VB_W / 2;
+
 const statusConfig: Record<CourtStatus, { label: string; className: string }> = {
   ready: {
     label: "Lista",
@@ -77,28 +85,13 @@ export const PadelCourt = ({
                   "inset 0 3px 36px hsl(165 75% 5% / 0.42), inset 0 -2px 20px hsl(215 60% 15% / 0.25)",
               }}
             >
-              {/* Perímetro de juego */}
+              {/* Perímetro (sin SVG aquí: la capa de líneas va encima de los jugadores) */}
               <div className="absolute inset-3 rounded-[7px] border-[2.5px] border-white shadow-[0_0_0_1px_hsl(0_0%_0%/0.22),inset_0_1px_0_hsl(0_0%_100%/0.35)]" />
-
-              {/* Líneas verticales (cajas de servicio a izquierda y derecha) */}
-              <div className="absolute left-[28%] top-3 bottom-3 w-[3px] bg-white shadow-[1px_0_2px_hsl(0_0%_0%/0.25)]" />
-              <div className="absolute right-[28%] top-3 bottom-3 w-[3px] bg-white shadow-[-1px_0_2px_hsl(0_0%_0%/0.25)]" />
-
-              {/* Red horizontal en el centro (como una pista real vista desde arriba) */}
-              <div
-                className="absolute left-3 right-3 top-1/2 z-[1] h-[6px] -translate-y-1/2 shadow-[0_0_18px_hsl(0_0%_0%/0.5)]"
-                style={{
-                  backgroundImage: [
-                    "repeating-linear-gradient(90deg, hsl(0 0% 100% / 0.4) 0 2px, transparent 2px 5px)",
-                    "linear-gradient(180deg, hsl(var(--court-net)) 0%, hsl(var(--court-net-band)) 44%, hsl(var(--court-net-band)) 56%, hsl(var(--court-net)) 100%)",
-                  ].join(", "),
-                }}
-              />
             </div>
           </div>
 
-          {/* Jugadores: mitad superior / inferior; en cada mitad los dos jugadores en fila (izq–der) */}
-          <div className="relative z-[2] grid h-full w-full grid-rows-2">
+          {/* Jugadores debajo del trazado SVG para que las líneas blancas se vean encima */}
+          <div className="relative z-[3] grid h-full w-full grid-rows-2">
             <div className="flex items-center justify-around px-3 pt-4 sm:px-5 sm:pt-6">
               {topHalfPlayers.map((p, i) => (
                 <PlayerAvatar key={`T-${i}-${p.name}`} name={p.name} variant="accent" />
@@ -110,6 +103,23 @@ export const PadelCourt = ({
               ))}
             </div>
           </div>
+
+          {/* Trazado reglamentario encima del verde y de los avatares (esquema); mismo inset que borde interior 9px+12px */}
+          <svg
+            className="pointer-events-none absolute inset-[21px] z-[4] overflow-visible rounded-[7px]"
+            viewBox={`0 0 ${VB_W} ${VB_H}`}
+            preserveAspectRatio="none"
+            aria-hidden
+            shapeRendering="geometricPrecision"
+          >
+            <g stroke="#ffffff" strokeOpacity={0.98} strokeLinecap="square">
+              <line x1="0" y1={Y_SVC} x2={VB_W} y2={Y_SVC} strokeWidth={2} />
+              <line x1="0" y1={Y_SVC_BOT} x2={VB_W} y2={Y_SVC_BOT} strokeWidth={2} />
+              <line x1="0" y1={Y_NET} x2={VB_W} y2={Y_NET} strokeWidth={3} />
+              <line x1={CX} y1={Y_SVC} x2={CX} y2={Y_NET} strokeWidth={2} />
+              <line x1={CX} y1={Y_NET} x2={CX} y2={Y_SVC_BOT} strokeWidth={2} />
+            </g>
+          </svg>
         </div>
 
         {/* Leyenda (vista cenital: red horizontal) */}
