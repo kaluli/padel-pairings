@@ -42,7 +42,7 @@ export function SpreadsheetUpload() {
         <div>
           <h3 className="font-semibold text-sm tracking-tight">Subir Archivo</h3>
           <p className="text-xs text-muted-foreground">
-            Columnas: Nombre, Apellido, Nivel (.xlsx, .xls o .csv)
+            Columnas: Nombre, Apellidos, Nivel (o Nivel Playtomic), ParejaID opcional (.xlsx / .csv)
           </p>
         </div>
       </div>

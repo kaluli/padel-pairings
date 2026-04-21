@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import type { PlayerEntry } from "@/types/player";
-import { shuffle, sortPlayersByNivel } from "@/lib/padel";
+import { shuffle, orderPlayersForCourts } from "@/lib/padel";
 
 type PadelPlayersContextValue = {
   players: PlayerEntry[];
@@ -32,7 +32,7 @@ export function PadelPlayersProvider({ children }: { children: ReactNode }) {
 
   const orderedPlayers = useMemo(() => {
     if (isLevelOrdering) {
-      return sortPlayersByNivel(players);
+      return orderPlayersForCourts(players);
     }
     void shuffleSeed;
     return shuffle([...players]);

@@ -18,6 +18,45 @@ function rowDisplayName(nombre: string, apellido: string): string {
   return [nombre, apellido].filter(Boolean).join(" ").trim();
 }
 
+function parseParejaId(raw: unknown): number | null {
+  if (raw === null || raw === undefined || raw === "") return null;
+  if (typeof raw === "number" && Number.isFinite(raw)) return raw;
+  const s = normalizeCell(raw);
+  if (!s) return null;
+  const n = Number.parseFloat(s.replace(",", "."));
+  return Number.isFinite(n) ? n : null;
+}
+
+function validateParejaStructure(entries: PlayerEntry[]): void {
+  const byId = new Map<number, PlayerEntry[]>();
+  const singles: PlayerEntry[] = [];
+
+  for (const e of entries) {
+    if (typeof e.parejaId === "number") {
+      const arr = byId.get(e.parejaId) ?? [];
+      arr.push(e);
+      byId.set(e.parejaId, arr);
+    } else {
+      singles.push(e);
+    }
+  }
+
+  for (const [id, arr] of byId) {
+    if (arr.length !== 2) {
+      throw new SpreadsheetParseError(
+        `ParejaID ${id} debe tener exactamente 2 jugadores (hay ${arr.length}).`,
+      );
+    }
+  }
+
+  const hasFixedPairs = byId.size > 0;
+  if (hasFixedPairs && singles.length % 2 !== 0) {
+    throw new SpreadsheetParseError(
+      "Los jugadores sin ParejaID deben ser en número par para formar parejas.",
+    );
+  }
+}
+
 /** Lee la primera fila como cabeceras y devuelve filas como objetos */
 function sheetToRows(sheet: XLSX.WorkSheet): Record<string, unknown>[] {
   return XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
@@ -44,7 +83,7 @@ export class SpreadsheetParseError extends Error {
 }
 
 /**
- * Parsea .xlsx o .csv con columnas Nombre, Apellido y Nivel (Nº opcional).
+ * Parsea .xlsx o .csv con Nombre; Apellido(s); Nivel o Nivel Playtomic; ParejaID opcional.
  */
 export async function parsePadelSpreadsheet(file: File): Promise<PlayerEntry[]> {
   const ext = file.name.split(".").pop()?.toLowerCase();
@@ -81,17 +120,20 @@ export async function parsePadelSpreadsheet(file: File): Promise<PlayerEntry[]> 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     const nombre = normalizeCell(getCell(row, ["Nombre"]));
-    const apellido = normalizeCell(getCell(row, ["Apellido"]));
-    const nivelRaw = getCell(row, ["Nivel"]);
+    const apellido = normalizeCell(getCell(row, ["Apellido", "Apellidos"]));
+    const nivelRaw = getCell(row, ["Nivel", "Nivel Playtomic"]);
+    const parejaRaw = getCell(row, ["ParejaID", "Pareja Id", "Pareja"]);
     const displayName = rowDisplayName(nombre, apellido);
 
     if (!displayName) continue;
 
     const nivel = parseNivel(nivelRaw);
+    const parejaId = parseParejaId(parejaRaw);
     entries.push({
       id: crypto.randomUUID(),
       displayName,
       nivel,
+      ...(parejaId !== null ? { parejaId } : {}),
     });
   }
 
@@ -104,9 +146,11 @@ export async function parsePadelSpreadsheet(file: File): Promise<PlayerEntry[]> 
   const missingNivel = entries.filter((e) => e.nivel === null).length;
   if (missingNivel === entries.length) {
     throw new SpreadsheetParseError(
-      'No se pudo leer la columna "Nivel" (valores numéricos como 1.5 o 2).',
+      'No se pudo leer la columna de nivel ("Nivel" o "Nivel Playtomic"); usa valores como 1,5 o 2.',
     );
   }
+
+  validateParejaStructure(entries);
 
   return entries;
 }
