@@ -71,55 +71,60 @@ export const PadelCourt = ({
       <div className="px-6 py-7 sm:px-7 sm:py-8 bg-muted/30">
         {/* ~10×20 m cenital; largo reducido ~15 % respecto a 10/21 → 10/17.85 ≈ 200/357 */}
         <div className="relative mx-auto aspect-[200/357] w-full max-w-[min(100%,280px)] overflow-visible rounded-xl shadow-court sm:max-w-[300px]">
-          {/* Capa decorativa */}
+          {/* Marco exterior + pista con proporción fija 200:357 (evita deformar mitades A/B al estirar el SVG) */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl bg-court-surround shadow-[inset_0_1px_0_hsl(0_0%_100%/0.14)]">
-            <div
-              className="absolute inset-[9px] overflow-hidden rounded-[11px] ring-1 ring-white/35"
-              style={{
-                backgroundImage: [
-                  "repeating-linear-gradient(90deg, hsl(0 0% 0% / 0.12) 0 1px, transparent 1px 18px)",
-                  "repeating-linear-gradient(0deg, hsl(0 0% 100% / 0.07) 0 2px, transparent 2px 22px)",
-                  "var(--gradient-court)",
-                ].join(", "),
-                boxShadow:
-                  "inset 0 3px 36px hsl(165 75% 5% / 0.42), inset 0 -2px 20px hsl(215 60% 15% / 0.25)",
-              }}
-            >
-              {/* Perímetro (sin SVG aquí: la capa de líneas va encima de los jugadores) */}
-              <div className="absolute inset-3 rounded-[7px] border-[2.5px] border-white shadow-[0_0_0_1px_hsl(0_0%_0%/0.22),inset_0_1px_0_hsl(0_0%_100%/0.35)]" />
+            <div className="absolute inset-[9px] flex items-center justify-center overflow-hidden rounded-[11px] ring-1 ring-white/35">
+              <div className="relative aspect-[200/357] h-full max-h-full w-auto max-w-full min-h-0 min-w-0">
+                {/* Superficie */}
+                <div
+                  className="absolute inset-0 overflow-hidden rounded-[11px]"
+                  style={{
+                    backgroundImage: [
+                      "repeating-linear-gradient(90deg, hsl(0 0% 0% / 0.12) 0 1px, transparent 1px 18px)",
+                      "repeating-linear-gradient(0deg, hsl(0 0% 100% / 0.07) 0 2px, transparent 2px 22px)",
+                      "var(--gradient-court)",
+                    ].join(", "),
+                    boxShadow:
+                      "inset 0 3px 36px hsl(165 75% 5% / 0.42), inset 0 -2px 20px hsl(215 60% 15% / 0.25)",
+                  }}
+                />
+                <div className="absolute inset-3 rounded-[7px] border-[2.5px] border-white shadow-[0_0_0_1px_hsl(0_0%_0%/0.22),inset_0_1px_0_hsl(0_0%_100%/0.35)]" />
+
+                {/* Líneas debajo de avatares y textos */}
+                <div className="pointer-events-none absolute inset-3 z-[2] overflow-hidden rounded-[7px]">
+                  <svg
+                    className="absolute inset-0 h-full w-full"
+                    viewBox={`0 0 ${VB_W} ${VB_H}`}
+                    preserveAspectRatio="none"
+                    aria-hidden
+                    shapeRendering="geometricPrecision"
+                  >
+                    <g stroke="#ffffff" strokeOpacity={0.98} strokeLinecap="butt">
+                      <line x1="0" y1={Y_SVC} x2={VB_W} y2={Y_SVC} strokeWidth={2} />
+                      <line x1="0" y1={Y_SVC_BOT} x2={VB_W} y2={Y_SVC_BOT} strokeWidth={2} />
+                      <line x1="0" y1={Y_NET} x2={VB_W} y2={Y_NET} strokeWidth={3} />
+                      <line x1={CX} y1={Y_SVC} x2={CX} y2={Y_NET} strokeWidth={2} />
+                      <line x1={CX} y1={Y_NET} x2={CX} y2={Y_SVC_BOT} strokeWidth={2} />
+                    </g>
+                  </svg>
+                </div>
+
+                {/* Jugadores por encima del trazado; pointer-events-auto porque el padre lleva pointer-events-none */}
+                <div className="relative z-[4] grid h-full w-full grid-rows-2 pointer-events-auto">
+                  <div className="flex items-center justify-around px-3 py-4 sm:px-5 sm:py-5">
+                    {topHalfPlayers.map((p, i) => (
+                      <PlayerAvatar key={`T-${i}-${p.name}`} name={p.name} variant="accent" />
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-around px-3 py-4 sm:px-5 sm:py-5">
+                    {bottomHalfPlayers.map((p, i) => (
+                      <PlayerAvatar key={`B-${i}-${p.name}`} name={p.name} variant="primary" />
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Jugadores debajo del trazado SVG para que las líneas blancas se vean encima */}
-          <div className="relative z-[3] grid h-full w-full grid-rows-2">
-            <div className="flex items-center justify-around px-3 pt-4 sm:px-5 sm:pt-6">
-              {topHalfPlayers.map((p, i) => (
-                <PlayerAvatar key={`T-${i}-${p.name}`} name={p.name} variant="accent" />
-              ))}
-            </div>
-            <div className="flex items-center justify-around px-3 pb-4 sm:px-5 sm:pb-6">
-              {bottomHalfPlayers.map((p, i) => (
-                <PlayerAvatar key={`B-${i}-${p.name}`} name={p.name} variant="primary" />
-              ))}
-            </div>
-          </div>
-
-          {/* Trazado reglamentario encima del verde y de los avatares (esquema); mismo inset que borde interior 9px+12px */}
-          <svg
-            className="pointer-events-none absolute inset-[21px] z-[4] overflow-visible rounded-[7px]"
-            viewBox={`0 0 ${VB_W} ${VB_H}`}
-            preserveAspectRatio="none"
-            aria-hidden
-            shapeRendering="geometricPrecision"
-          >
-            <g stroke="#ffffff" strokeOpacity={0.98} strokeLinecap="square">
-              <line x1="0" y1={Y_SVC} x2={VB_W} y2={Y_SVC} strokeWidth={2} />
-              <line x1="0" y1={Y_SVC_BOT} x2={VB_W} y2={Y_SVC_BOT} strokeWidth={2} />
-              <line x1="0" y1={Y_NET} x2={VB_W} y2={Y_NET} strokeWidth={3} />
-              <line x1={CX} y1={Y_SVC} x2={CX} y2={Y_NET} strokeWidth={2} />
-              <line x1={CX} y1={Y_NET} x2={CX} y2={Y_SVC_BOT} strokeWidth={2} />
-            </g>
-          </svg>
         </div>
 
         {/* Leyenda (vista cenital: red horizontal) */}
