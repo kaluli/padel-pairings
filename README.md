@@ -84,7 +84,7 @@ npm install
 npm run dev
 ```
 
-Por defecto Vite usa el puerto configurado en `vite.config.ts` (actualmente **8080** si está libre).
+El puerto de desarrollo está en `vite.config.ts` (por defecto **5173**). Si el puerto estuviera ocupado, Vite propondrá otro y lo mostrará en la consola.
 
 ## Build
 

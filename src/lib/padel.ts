@@ -30,6 +30,25 @@ function pairLevelPromedio(a: PlayerEntry, b: PlayerEntry): number {
   return Number.POSITIVE_INFINITY;
 }
 
+/**
+ * Promedio de nivel para pintar junto a Equipo A/B (dos jugadores por mitad de pista).
+ * Coincide con la lógica del Excel: si solo uno tiene nivel, se muestra ese valor.
+ */
+export function averageNivelForCourtHalf(displayNames: string[], roster: PlayerEntry[]): number | null {
+  const resolved = displayNames
+    .slice(0, 2)
+    .map((name) => roster.find((p) => p.displayName === name))
+    .filter((p): p is PlayerEntry => Boolean(p));
+  if (resolved.length === 0) return null;
+  if (resolved.length === 1) return resolved[0].nivel;
+  const na = resolved[0].nivel;
+  const nb = resolved[1].nivel;
+  if (na !== null && nb !== null) return (na + nb) / 2;
+  if (na !== null) return na;
+  if (nb !== null) return nb;
+  return null;
+}
+
 type PairUnit = readonly [PlayerEntry, PlayerEntry];
 
 function sortPairInternally(pair: PairUnit): PairUnit {

@@ -2,7 +2,7 @@ import { useMemo, useCallback } from "react";
 import { PlayerInput } from "@/components/PlayerInput";
 import { PadelCourt } from "@/components/PadelCourt";
 import { Button } from "@/components/ui/button";
-import { buildCourts } from "@/lib/padel";
+import { averageNivelForCourtHalf, buildCourts } from "@/lib/padel";
 import { downloadCourtsHtml } from "@/lib/exportCourtsHtml";
 import { usePadelPlayers } from "@/context/PadelPlayersContext";
 import { Download, Trophy } from "lucide-react";
@@ -121,6 +121,8 @@ const Index = () => {
                       courtNumber={i + 1}
                       bottomHalfPlayers={c.left.map((name) => ({ name }))}
                       topHalfPlayers={c.right.map((name) => ({ name }))}
+                      promedioEquipoA={averageNivelForCourtHalf(c.right, players)}
+                      promedioEquipoB={averageNivelForCourtHalf(c.left, players)}
                       status={i === 0 ? "in-progress" : "ready"}
                     />
                   ))}

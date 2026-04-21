@@ -13,8 +13,28 @@ export interface PadelCourtProps {
   bottomHalfPlayers: CourtPlayer[];
   /** Mitad superior (otro lado de la red) */
   topHalfPlayers: CourtPlayer[];
+  /** Mitad superior = Equipo A — promedio de nivel de esa pareja (opcional) */
+  promedioEquipoA?: number | null;
+  /** Mitad inferior = Equipo B — promedio de nivel de esa pareja (opcional) */
+  promedioEquipoB?: number | null;
   /** Court status — easy to wire to real data later */
   status?: CourtStatus;
+}
+
+const nivelFmt = new Intl.NumberFormat("es-ES", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
+
+function PromedioChip({ value }: { value: number }) {
+  return (
+    <span className="ml-1.5 inline-flex items-baseline gap-0.5 tabular-nums normal-case tracking-normal font-semibold opacity-95">
+      <span aria-hidden className="font-bold opacity-75">
+        ·
+      </span>
+      <span>{nivelFmt.format(value)}</span>
+    </span>
+  );
 }
 
 /** ViewBox = 10 m × 20 m (ancho × largo cenital); encaja con aspect del rectángulo interior */
@@ -44,6 +64,8 @@ export const PadelCourt = ({
   courtNumber,
   bottomHalfPlayers,
   topHalfPlayers,
+  promedioEquipoA,
+  promedioEquipoB,
   status = "ready",
 }: PadelCourtProps) => {
   const statusInfo = statusConfig[status];
@@ -160,8 +182,14 @@ export const PadelCourt = ({
 
         {/* Leyenda (vista cenital: red horizontal) */}
         <div className="mx-auto mt-3 flex max-w-[300px] flex-col gap-1 text-center text-[10px] font-bold uppercase tracking-wider">
-          <span className="text-accent">▲ Equipo A</span>
-          <span className="text-primary">▼ Equipo B</span>
+          <span className="text-accent">
+            ▲ Equipo A
+            {promedioEquipoA != null && <PromedioChip value={promedioEquipoA} />}
+          </span>
+          <span className="text-primary">
+            ▼ Equipo B
+            {promedioEquipoB != null && <PromedioChip value={promedioEquipoB} />}
+          </span>
         </div>
       </div>
     </div>

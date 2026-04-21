@@ -6,7 +6,8 @@ import path from "path";
 export default defineConfig({
   server: {
     host: "::",
-    port: 8080,
+    // 8080 suele estar ocupado por Apache (httpd) en macOS; 5173 es el default de Vite
+    port: 5173,
     hmr: {
       overlay: false,
     },
