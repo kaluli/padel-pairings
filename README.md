@@ -10,9 +10,9 @@ Ideal para clubes, torneos abiertos o quedadas donde hay que repartir a todo el 
 
 ## Qué hace esta app
 
-1. **Importas** tu archivo con columnas **Nombre**, **Apellido** y **Nivel**.
-2. La app **agrupa de 4 en 4** para formar pistas (2 parejas por pista).
-3. **Ordena por nivel** para que la distribución refleje el nivel real de cada jugador en la vista (las pistas se organizan según ese criterio al venir del Excel).
+1. **Importas** tu archivo con columnas **Nombre**, apellidos y nivel (ver tabla más abajo); opcionalmente **ParejaID** para fijar parejas.
+2. La app **agrupa de 4 en 4** para formar pistas (2 parejas rivales por pista).
+3. **Ordena por nivel** al importar: sin parejas fijas, jugador a jugador; con **ParejaID**, cada pareja se posiciona según el **promedio** de los dos niveles (si difieren). En pantalla, las pistas más fuertes quedan arriba en la lista.
 4. Puedes **añadir o quitar jugadores** a mano, **sortear** el orden si quieres aleatoriedad, o **limpiar** y empezar de nuevo.
 
 ### Capturas (demo)
@@ -32,37 +32,48 @@ Todo ocurre en el navegador; no hace falta instalar nada más que el navegador p
 
 La app lee **la primera hoja** del libro (por ejemplo `Hoja1`). La primera fila debe ser **cabecera** con nombres de columnas.
 
-### Columnas obligatorias (nombre exacto recomendado)
+### Columnas de datos (nombres aceptados)
 
-| Columna    | Descripción |
-|------------|-------------|
-| **Nombre** | Nombre del jugador. |
-| **Apellido** | Apellido(s). Si está vacío pero hay nombre, se usa solo el nombre. |
-| **Nivel** | Valor numérico del nivel (ej. `1.5`, `2`, `3.25`). Se admiten **coma o punto** como decimal (`1,6` ≡ `1.6`). |
+| Columna | Alias reconocidos | Descripción |
+|--------|-------------------|-------------|
+| **Nombre** | — | Nombre del jugador (obligatorio para no saltar la fila). |
+| Apellidos | **Apellido**, **Apellidos** | Apellido(s). Puede ir vacío; el nombre mostrado es nombre + apellidos. |
+| Nivel | **Nivel**, **Nivel Playtomic** | Valor numérico (ej. `1.5`, `2`, `2,55`). **Coma o punto** como decimal (`1,6` ≡ `1.6`). |
+| *(opcional)* **ParejaID** | **Pareja Id**, **Pareja** | Mismo número en **dos filas** = esas dos personas juegan siempre **en la misma mitad de pista** (misma pareja). Pueden tener niveles distintos: para decidir en qué pista va la pareja se usa el **promedio** de los dos niveles. Las filas **sin** `ParejaID` se emparejan entre sí por orden de nivel (de dos en dos). |
 
-### Columnas opcionales
+Otras columnas extra (por ejemplo **Nº** o **Pista**) **se ignoran** para el cálculo.
 
-| Columna | Descripción |
-|---------|-------------|
-| **Nº** | Índice o número de orden; **no es obligatorio** para la importación. La app lo ignora para formar parejas y pistas. |
+### Validación cuando usas `ParejaID`
 
-Cualquier otra columna extra en el archivo (por ejemplo una columna **Pista** para organización externa) **no afecta** al cálculo dentro de la aplicación.
+- Cada valor de **ParejaID** debe aparecer **exactamente dos veces** (una pareja).
+- Si en el archivo hay **al menos un** `ParejaID`, los jugadores **sin** `ParejaID` deben ser **en número par** (para cerrar parejas entre ellos).
 
 ### Ejemplo de filas válidas
 
-| Nº | Nombre | Apellido | Nivel |
-|----|--------|----------|-------|
-| 1 | Carlos | Gómez | 1.5 |
-| 2 | Marta | Ruiz | 1.6 |
+Sin pareja fija:
+
+| Nombre | Apellidos | Nivel Playtomic |
+|--------|-----------|-----------------|
+| Carlos | Gómez | 1.5 |
+| Marta | Ruiz | 1,6 |
+
+Con parejas (mismo `ParejaID` = misma pareja):
+
+| Nombre | Apellidos | Nivel Playtomic | ParejaID |
+|--------|-----------|-----------------|----------|
+| Ana | López | 2.8 | 1 |
+| Luis | Díaz | 2.2 | 1 |
+
+Para ordenar la pareja del ejemplo en la lista de pistas se usa el promedio `(2.8 + 2.2) / 2`.
 
 ### Reglas prácticas
 
 - **Formatos**: `.xlsx`, `.xls`, `.csv`.
 - Se omiten las filas **sin nombre ni apellido** (vacías).
-- Debe haber **al menos un nivel válido** en el conjunto; si ninguna fila tiene **Nivel** interpretable como número, la importación falla.
-- Los jugadores se muestran **ordenados por nivel** (menor nivel hacia las pistas “inferiores” en la vista al importar desde archivo). Cada **4 jugadores** completan una pista (4 jugadores por pista).
+- Debe haber **al menos un nivel válido** en el conjunto; si ninguna fila tiene nivel interpretable como número, la importación falla.
+- Cada **4 jugadores** forman una pista completa (2 parejas rivales). Los que sobran aparecen en **En espera**.
 
-En el repo hay un ejemplo: **`Orden pistas.xlsx`**.
+Ejemplos en el repo: **`Orden pistas.xlsx`**, **`jugadores_padel_48_personas_y_pareja.xlsx`** (formato con **Nivel Playtomic** y **ParejaID**).
 
 ---
 

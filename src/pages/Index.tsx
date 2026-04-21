@@ -108,8 +108,9 @@ const Index = () => {
 
                 {isLevelOrdering && (
                   <p className="text-xs text-muted-foreground mb-3">
-                    Orden por nivel: arriba en la lista los de mayor nivel; abajo los de menor nivel. Pareja:
-                    dos jugadores en la misma mitad de pista (mismo lado de la red); rivales en la otra mitad.
+                    Orden por nivel: arriba las pistas más fuertes; abajo las más débiles. Si una pareja (mismo
+                    ParejaID) tiene niveles distintos, la posición en la lista usa el promedio de ambos niveles.
+                    Dos jugadores en la misma mitad de pista son pareja; rivales en la otra mitad.
                   </p>
                 )}
 

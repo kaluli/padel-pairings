@@ -14,11 +14,20 @@ function comparePlayersByNivelAscending(a: PlayerEntry, b: PlayerEntry): number 
   return na - nb;
 }
 
-/** Media de niveles del par para ordenar pistas (sin nivel cuenta como ausente). */
-function pairStrengthAverage(a: PlayerEntry, b: PlayerEntry): number {
-  const levels = [a.nivel, b.nivel].filter((n): n is number => n !== null);
-  if (levels.length === 0) return Number.POSITIVE_INFINITY;
-  return levels.reduce((s, n) => s + n, 0) / levels.length;
+/**
+ * Promedio de nivel de los dos jugadores de la pareja (incluye parejas con distinto puntaje).
+ * Ese valor decide en qué pista van (junto con las demás parejas, de menor a mayor).
+ * Si solo uno tiene nivel, se usa ese; si ninguno, van al final del orden.
+ */
+function pairLevelPromedio(a: PlayerEntry, b: PlayerEntry): number {
+  const na = a.nivel;
+  const nb = b.nivel;
+  if (na !== null && nb !== null) {
+    return (na + nb) / 2;
+  }
+  if (na !== null) return na;
+  if (nb !== null) return nb;
+  return Number.POSITIVE_INFINITY;
 }
 
 type PairUnit = readonly [PlayerEntry, PlayerEntry];
@@ -31,6 +40,7 @@ function sortPairInternally(pair: PairUnit): PairUnit {
 /**
  * Orden para `buildCourts`: cada bloque de 4 es [pareja izq][pareja der].
  * Si hay `parejaId` en el Excel, esas dos personas no se separan.
+ * Las parejas se ordenan por el promedio de nivel de sus dos jugadores (puntajes distintos → media).
  * Sin parejas fijas, equivale a `sortPlayersByNivel`.
  */
 export function orderPlayersForCourts(players: PlayerEntry[]): PlayerEntry[] {
@@ -74,8 +84,8 @@ export function orderPlayersForCourts(players: PlayerEntry[]): PlayerEntry[] {
   }
 
   pairUnits.sort((pa, pb) => {
-    const sa = pairStrengthAverage(pa[0], pa[1]);
-    const sb = pairStrengthAverage(pb[0], pb[1]);
+    const sa = pairLevelPromedio(pa[0], pa[1]);
+    const sb = pairLevelPromedio(pb[0], pb[1]);
     return sa - sb;
   });
 
